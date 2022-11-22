@@ -10,12 +10,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyA2zAXGuQfE0jwthYPZQLv49V4-UrgwHFk",
+  authDomain: "ecommerce-latam.firebaseapp.com",
+  projectId: "ecommerce-latam",
+  storageBucket: "ecommerce-latam.appspot.com",
+  messagingSenderId: "942734483048",
+  appId: "1:942734483048:web:4ec9684bac4e79dbe7e5dd"
 };
 
 // Initialize Firebase

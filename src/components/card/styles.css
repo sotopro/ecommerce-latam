@@ -37,3 +37,96 @@
     font-size: 0.8;
     color: #212121;
 }
+
+.card-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+.card-button-minus {
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.card-button-minus:hover {
+    background-color: #eee;
+    color: #000;
+    font-weight: bold;
+}
+
+.card-button-minus:disabled {
+    background-color: #eee;
+    color: #eee;
+    cursor: not-allowed;
+}
+
+input {
+    text-align: center;
+}
+
+.card-input {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid #999;
+    font-size: 1rem;
+    margin: 0 0.5rem;
+}
+.card-button-plus {
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.card-button-plus:hover {
+    background-color: #eee;
+    color: #000;
+    font-weight: bold;
+}
+
+.card-button-plus:disabled {
+    background-color: #eee;
+    color: #eee;
+    cursor: not-allowed;
+}
+
+.card-button {
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 4px;
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.card-button:hover {
+    background-color: #eee;
+    color: #000;
+    font-weight: bold;
+}
+
+.card-button:disabled {
+    background-color: #eee;
+    color: #000;
+    cursor: not-allowed;
+    font-weight: normal;
+}
