@@ -24,3 +24,12 @@
   flex-direction: row;
   flex: 1,
 }
+
+.filter-menu-container {
+  display: flex;
+  flex-direction: row;
+  width: 60%;
+  padding-bottom: 3rem;
+  justify-content: space-around;
+  align-items: center;
+}
