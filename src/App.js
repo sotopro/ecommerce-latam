@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { getFirestore, query, getDocs, collection, where, addDoc } from "firebase/firestore";
 import logo from './logo.svg';
 import './App.css';
-import { Card, FilterMenuItem } from './components';
+import { Card, CartItem, FilterMenuItem, Header, Loader, Sidebar } from './components';
 
 function App() {
   const [allProducts, setAllProducts] = useState(null);
@@ -10,7 +10,8 @@ function App() {
   const [isFiltering, setIsFiltering] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState(null);
   const [cart, setCart] = useState([]);
-  const [cartId, setCartId] = useState(null);
+  const [cartId, setOrderId] = useState(null);
+  const [isOpenCart, setIsOpenCart] = useState(false);
 
   useEffect(() => {
     const db = getFirestore();
@@ -21,6 +22,7 @@ function App() {
       .then((snapshot) => {
         const products = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setAllProducts(products);
+        setFilteredProducts(products);
       }),
       getDocs(getCategoryCollection)
       .then((snapshot) => {
@@ -30,6 +32,10 @@ function App() {
     )
     ])
   }, []);
+
+  const onHandlerCart = () => {
+    setIsOpenCart(!isOpenCart);
+  }
 
   const onFilter = (categoryId) => {
     console.log('categoryId', categoryId);
@@ -73,7 +79,7 @@ function App() {
   }
 
   const increaseQuantity = (id) => {
-    const item = allProducts?.find((product) => product.id === id);
+    const item = !isFiltering ? allProducts?.find((product) => product.id === id) : filteredProducts?.find((product) => product.id === id);
     if(cart?.find((product) => product.id === id)?.quantity == item?.stock) return;
     if(cart?.length === 0){
       setCart([{ ...item, quantity: 1 }]);
@@ -96,33 +102,90 @@ function App() {
   }
 
   const renderProducts = () => {
-    if(isFiltering && filteredProducts) {
-      return filteredProducts.map((product) => <Card key={product.id} product={product} descreaseQuantity={descreaseQuantity} increaseQuantity={increaseQuantity} numberOfItem={getItemQuantity(product.id)} />);
-    }
-    if(!isFiltering && allProducts) {
-      return allProducts.map((product) => <Card key={product.id} product={product} descreaseQuantity={descreaseQuantity} increaseQuantity={increaseQuantity} numberOfItem={getItemQuantity(product.id)} />);
+    switch(true) {
+      case isFiltering && filteredProducts?.length === 0:
+        return <h1>No products found</h1>;
+      case isFiltering && filteredProducts?.length > 0:
+        return filteredProducts.map((product) => (
+          <Card
+            key={product.id}
+            product={product}
+            increaseQuantity={increaseQuantity}
+            descreaseQuantity={descreaseQuantity}
+            numberOfItem={getItemQuantity(product.id)}
+          />
+        ));
+      case !isFiltering && allProducts?.length > 0:
+        return allProducts.map((product) => (
+          <Card
+            key={product.id}
+            product={product}
+            increaseQuantity={increaseQuantity}
+            descreaseQuantity={descreaseQuantity}
+            numberOfItem={getItemQuantity(product.id)}
+          />
+        ));
+      default:
+        return <Loader />;
     }
   };
 
-  const saveCart = () => {
-    const myCart = {
+  const cartTotal = cart?.reduce((acc, item) => {
+    return acc + item.price * item.quantity;
+  }, 0);
+
+  const createOrder = () => {
+    const myOrder = {
       user: {
         name: 'John Doe',
         email: 'awdawd@gmail.com'
       },
       items: cart,
-      total: 100,
+      total: cartTotal,
     }
     const db = getFirestore();
-    const cartCollection = collection(db, 'carts');
-    addDoc(cartCollection, myCart)
+    const orderCollection = collection(db, 'orders');
+    addDoc(orderCollection, myOrder)
       .then((docRef) => {
-        setCartId(docRef.id);
+        setOrderId(docRef.id);
+        setCart([]);
+        setIsFiltering(false);
+        onHandlerCart();
       })
   };
 
+
+  const onRemoveItemCart = (id) => {
+    setCart(currentCart => {
+      return currentCart.filter(item => item.id !== id);
+    });
+  }
+
   return (
     <div className="app">
+      <Sidebar isOpenCart={isOpenCart} onHandlerCart={onHandlerCart}>
+        {cart.length > 0 ? (
+          <>
+            {cart.map((item) => (
+              <CartItem item={item} key={item.id} onRemoveItem={onRemoveItemCart}  />
+            ))}
+            <div className='cart-footer'>
+              <div className='cart-footer-total'>
+                <h3 className='cart-footer-total-title'>Total</h3>
+                <h3 className='cart-footer-total-amout'>${cartTotal}</h3>
+              </div>
+              <button 
+                className='button-create-order'
+                onClick={createOrder}>
+                Create order
+                </button>
+            </div>
+          </>
+        ): (
+          <h2 className='cart-empty'>Your cart is empty</h2>
+        )}
+      </Sidebar>
+      <Header numbersOfItems={cart.length} onHandlerCart={onHandlerCart}/>
       <div className='container'>
         <div className='filter-menu-container'>
           {allCategories && allCategories.map((category) => (
@@ -131,9 +194,7 @@ function App() {
         </div>
         <div className='products-container'>
           {renderProducts()}
-          {/* {isFiltering ? <p>No hay productos</p> : null} */}
         </div>
-        <button onClick={saveCart}>Save Cart</button>
       </div>
     </div>
   );

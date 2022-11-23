@@ -1,0 +1,43 @@
+.header-menu {
+    display: flex;
+    width: 100%;
+    height: 70px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+.header-menu-logo {
+    width: 120px;
+    margin-left: 1rem;
+}
+.header-logo {
+    font-weight: bold;
+    font-size: 1.7rem;
+}
+.header-menu-cart {
+    width: 120px;
+    height: 40px;
+    margin-right: 1rem;
+}
+.header-menu-cart-image {
+    width: 40px;
+    height: 40px;
+}
+.header-menu-cart-number-container {
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0.6rem;
+}
+.header-menu-cart-number {
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
