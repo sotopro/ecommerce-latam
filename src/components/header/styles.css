@@ -20,6 +20,7 @@
     width: 120px;
     height: 40px;
     margin-right: 1rem;
+    cursor: pointer;
 }
 
 .header-menu-cart-image {

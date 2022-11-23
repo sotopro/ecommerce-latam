@@ -1,0 +1,29 @@
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 20vw;
+    height: 100vh;
+    background-color: #60517B;
+    padding: 2rem;
+    z-index: 1;
+    transition: all 0.5s ease-in-out;
+}
+
+.close-button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+.close-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+}

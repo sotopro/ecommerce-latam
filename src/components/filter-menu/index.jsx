@@ -1,10 +1,10 @@
 import React from "react";
 import './styles.css'
 
-const FilterMenu = ({ name, id}) => {
+const FilterMenu = ({ name, id, onFilter}) => {
     return (
         <div className="filter-menu">
-            <button className="filter-menu-button" id={id}>{name}</button>
+            <button onClick={() => onFilter(id)} className="filter-menu-button" id={id}>{name}</button>
         </div>
     )
 };
