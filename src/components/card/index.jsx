@@ -1,8 +1,8 @@
 import React from "react";
 import './styles.css'
 
-const Card = ({ product }) => {
-    const { category, description, image, name, price, stock} = product || {};
+const Card = ({ product, descreaseQuantity, increaseQuantity, numberOfItem }) => {
+    const { id, category, description, image, name, price, stock} = product || {};
     return (
         <div className="card">
             <img className="cart-image" src={image} alt={name} />
@@ -14,11 +14,15 @@ const Card = ({ product }) => {
                 <p className="card-stock">{stock} in stock</p>
             </div>
             <div className="card-button-container">
-                <button className="card-button-minus">-</button>
-                <input className="card-input" type="number" value="1" />
-                <button className="card-button-plus">+</button>
+                <button disabled={numberOfItem === 0} className="card-button-minus" onClick={() => descreaseQuantity(id)}>-</button>
+                <input
+                    disabled
+                    className="card-input"
+                    type="text"
+                    value={numberOfItem} 
+                />
+                <button disabled={numberOfItem == stock} className="card-button-plus" onClick={() => increaseQuantity(id)}>+</button>
             </div>
-            <button className="card-button">Add to cart</button>
         </div>
     )
 }
