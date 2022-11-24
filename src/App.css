@@ -71,3 +71,8 @@
   background-color: #000;
   color: #ffffff;
 }
+
+.cart-empty {
+  font-size: 1.5rem;
+  color: #ffffff;
+}

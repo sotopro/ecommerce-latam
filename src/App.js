@@ -38,7 +38,6 @@ function App() {
   }
 
   const onFilter = (categoryId) => {
-    console.log('categoryId', categoryId);
     const db = getFirestore();
     const q =  query(
       collection(db, 'products'),
@@ -83,6 +82,7 @@ function App() {
     if(cart?.find((product) => product.id === id)?.quantity == item?.stock) return;
     if(cart?.length === 0){
       setCart([{ ...item, quantity: 1 }]);
+      setIsOpenCart(!isOpenCart);
     } else if(cart.length > 0 && !cart?.find(item => item.id === id)) {
       setCart([...cart, { ...item, quantity: 1 }]);
     } else {
