@@ -1,8 +1,8 @@
 import React, { useState, useEffect} from 'react';
-import { getFirestore, query, getDocs, collection, where, addDoc } from "firebase/firestore";
 import { firebaseServices } from './services';
 import './App.css';
 import { Card, CartItem, FilterMenuItem, Header, Loader, Sidebar } from './components';
+import { getCartTotal } from './utils';
 
 function App() {
   const [allProducts, setAllProducts] = useState(null);
@@ -13,7 +13,7 @@ function App() {
   const [cartId, setOrderId] = useState(null);
   const [isOpenCart, setIsOpenCart] = useState(false);
 
-  const { getProducts, getCategories, getProductsByCategory } = firebaseServices;
+  const { getProducts, getCategories, getProductsByCategory, createOrder } = firebaseServices;
 
   useEffect(() => {
     const getData = async () => {
@@ -112,11 +112,9 @@ function App() {
     }
   };
 
-  const cartTotal = cart?.reduce((acc, item) => {
-    return acc + item.price * item.quantity;
-  }, 0);
+  const cartTotal = getCartTotal(cart);
 
-  const createOrder = () => {
+  const onHandlerOrder = async () => {
     const myOrder = {
       user: {
         name: 'John Doe',
@@ -125,15 +123,11 @@ function App() {
       items: cart,
       total: cartTotal,
     }
-    const db = getFirestore();
-    const orderCollection = collection(db, 'orders');
-    addDoc(orderCollection, myOrder)
-      .then((docRef) => {
-        setOrderId(docRef.id);
-        setCart([]);
-        setIsFiltering(false);
-        onHandlerCart();
-      })
+    const orderId = await createOrder(myOrder);
+    setOrderId(orderId);
+    setCart([]);
+    setIsFiltering(false);
+    onHandlerCart();
   };
 
 
@@ -158,7 +152,7 @@ function App() {
               </div>
               <button 
                 className='button-create-order'
-                onClick={createOrder}>
+                onClick={onHandlerOrder}>
                 Create order
                 </button>
             </div>

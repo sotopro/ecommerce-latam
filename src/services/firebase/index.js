@@ -32,4 +32,12 @@ export const firebaseServices = {
             return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data()}));
         });
     },
+    createOrder: (order) => {
+        const db = getFirestore();
+        const ordersCollection = collection(db, 'orders');
+        return addDoc(ordersCollection, order)
+        .then((docRef) => {
+            return docRef.id;
+        });
+    },
 }
