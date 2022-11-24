@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { getFirestore, query, getDocs, collection, where, addDoc } from "firebase/firestore";
-import logo from './logo.svg';
+import { firebaseServices } from './services';
 import './App.css';
 import { Card, CartItem, FilterMenuItem, Header, Loader, Sidebar } from './components';
 
@@ -13,49 +13,31 @@ function App() {
   const [cartId, setOrderId] = useState(null);
   const [isOpenCart, setIsOpenCart] = useState(false);
 
+  const { getProducts, getCategories, getProductsByCategory } = firebaseServices;
+
   useEffect(() => {
-    const db = getFirestore();
-    const getProductsCollection = collection(db, 'products');
-    const getCategoryCollection = collection(db, 'categories');
-    Promise.all([
-      getDocs(getProductsCollection)
-      .then((snapshot) => {
-        const products = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const getData = async () => {
+      try {
+        const products = await getProducts();
+        const categories = await getCategories();
         setAllProducts(products);
-        setFilteredProducts(products);
-      }),
-      getDocs(getCategoryCollection)
-      .then((snapshot) => {
-        const categories = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setAllCategories(categories);
-      }
-    )
-    ])
-  }, []);
+      } catch (error) {
+        console.log(error);
+      } 
+    }
+
+    getData();
+  }, [getCategories, getProducts]);
 
   const onHandlerCart = () => {
     setIsOpenCart(!isOpenCart);
   }
 
-  const onFilter = (categoryId) => {
-    const db = getFirestore();
-    const q =  query(
-      collection(db, 'products'),
-      where('categoryId', '==', categoryId)
-    );
-    getDocs(q)
-      .then((snapshot) => {
-        if(snapshot.size === 0) {
-          setFilteredProducts([]);
-          setIsFiltering(true);
-        }
-        const products = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data()}));
-        setFilteredProducts(products);
-        setIsFiltering(true);
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
+  const onFilter = async (categoryId) => {
+    const filterByCategory = await getProductsByCategory(categoryId);
+      setFilteredProducts(filterByCategory);
+      setIsFiltering(true);
   }
 
   const descreaseQuantity = (id) => {
